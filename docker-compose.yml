@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  python-app:
+    build:
+      context: ./backend/
+      dockerfile: Dockerfile
+    container_name: python-http-server
+    expose:
+      - "8080"
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  nginx:
+    build:
+      context: ./nginx/
+      dockerfile: Dockerfile
+    container_name: nginx-server
+    ports:
+      - "80:80"
+    depends_on:
+      - python-app
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
